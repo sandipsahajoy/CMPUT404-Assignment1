@@ -62,7 +62,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
 
             except IsADirectoryError:
                 content_type = mimetypes.guess_type(path)[0]
-                response_header = "HTTP/1.1 301 Moved Permanently\r\nDate: {0}\r\nServer: 404asn1 server\r\nContent-Type: {1}\r\nContent-Length: {2}\r\nLocation: {3}\r\n\r\n".format(str(time.ctime()), content_type, 0, request_path + "/")
+                response_header = "HTTP/1.1 301 Moved Permanently\r\nDate: {0}\r\nServer: 404asn1 server\r\nContent-Type: {1}\r\nContent-Length: {2}\r\nLocation: {3}\r\n\r\n".format(str(time.ctime()), content_type, 0, "http://127.0.0.1:8080" + request_path + "/")
                 self.request.sendall(response_header.encode())
 
             except FileNotFoundError:
