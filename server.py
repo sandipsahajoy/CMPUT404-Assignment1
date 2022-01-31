@@ -1,5 +1,7 @@
+# Reference Code: https://github.com/jihoonog/CMPUT404-assignment-webserver/blob/master/server.py
+
 #  coding: utf-8 
-import socketserver
+import socketserver, os, time, mimetypes
 
 # Copyright 2013 Abram Hindle, Eddie Antonio Santos
 # 
@@ -30,9 +32,44 @@ import socketserver
 class MyWebServer(socketserver.BaseRequestHandler):
     
     def handle(self):
-        self.data = self.request.recv(1024).strip()
-        print ("Got a request of: %s\n" % self.data)
-        self.request.sendall(bytearray("OK",'utf-8'))
+        request = self.request.recv(1024).decode().strip().split()
+        request_type = request[0]
+        request_path = request[1] 
+
+        path = "./www" + request_path
+        if request_path.endswith("/"):
+            path = path + "index.html"
+
+
+        if request_type != "GET":
+            response = "HTTP/1.1 405 Method Not Allowed\r\nDate: {0}\r\nServer: 404asn1 server\r\n\r\n".format(str(time.ctime()))
+            self.request.sendall(response.encode())
+
+        elif "../" in path:
+            content_type = mimetypes.guess_type(path)[0]
+            response_header = "HTTP/1.1 404 Not Found\r\nDate: {0}\r\nServer: 404asn1 server\r\nContent-Type: {1}\r\nContent-Length: {2}\r\n\r\n".format(str(time.ctime()), content_type, 0)
+            self.request.sendall(response_header.encode())
+        
+        else:
+            try:
+                file = open(path, "rb")
+                response_body = file.read()
+                content_type = mimetypes.guess_type(path)[0]
+                response_header = "HTTP/1.1 200 OK\r\nDate: {0}\r\nServer: 404asn1 server\r\nContent-Type: {1}\r\nContent-Length: {2}\r\n\r\n".format(str(time.ctime()), content_type, len(response_body))
+                self.request.sendall(response_header.encode())
+                self.request.sendall(response_body)
+                file.close()
+
+            except IsADirectoryError:
+                content_type = mimetypes.guess_type(path)[0]
+                response_header = "HTTP/1.1 301 Moved Permanently\r\nDate: {0}\r\nServer: 404asn1 server\r\nContent-Type: {1}\r\nContent-Length: {2}\r\nLocation: {3}\r\n\r\n".format(str(time.ctime()), content_type, 0, request_path + "/")
+                self.request.sendall(response_header.encode())
+
+            except FileNotFoundError:
+                content_type = mimetypes.guess_type(path)[0]
+                response_header = "HTTP/1.1 404 Not Found\r\nDate: {0}\r\nServer: 404asn1 server\r\nContent-Type: {1}\r\nContent-Length: {2}\r\n\r\n".format(str(time.ctime()), content_type, 0)
+                self.request.sendall(response_header.encode())
+
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 8080
