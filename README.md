@@ -25,7 +25,7 @@ Software Foundation; All Rights Reserved under the PSF license (GPL
 compatible) http://docs.python.org/2/library/socketserver.html
 
 Reference / Collaboration
-========================
+=========================
 
 Reference Code:
 - https://github.com/jihoonog/CMPUT404-assignment-webserver/blob/master/server.py
