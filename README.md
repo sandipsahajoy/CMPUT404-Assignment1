@@ -28,4 +28,4 @@ Reference / Collaboration
 ========================
 
 Reference Code:
-    - https://github.com/jihoonog/CMPUT404-assignment-webserver/blob/master/server.py
+- https://github.com/jihoonog/CMPUT404-assignment-webserver/blob/master/server.py
