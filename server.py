@@ -42,7 +42,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
 
 
         if request_type != "GET":
-            response = "HTTP/1.1 405 Method Not Allowed\r\nDate: {0}\r\nServer: 404asn1 server\r\n\r\n".format(str(time.ctime()))
+            response = "HTTP/1.1 405 Method Not Allowed\r\nDate: {0}\r\nServer: 404asn1 server\r\nAllow: GET\r\n\r\n".format(str(time.ctime()))
             self.request.sendall(response.encode())
 
         elif "../" in path:
